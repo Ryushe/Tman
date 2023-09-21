@@ -12,6 +12,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 
+
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 
@@ -36,15 +37,39 @@ Available commands:
 !hello - say hi to the bot :)
 !update - update on any important anime info 
 !sendate @___ - update specific person on info
+!pfp @__ - gets user pfp / if left empty gives the user's pfp
     """)
 
 @bot.command()
-async def botherTemo(ctx, user: discord.User, *, message=None):
-    message = message or 'bbw'
+async def pfp(ctx, user: discord.User=None):
+    if user:
+        pic = user.display_avatar.url
+        await ctx.channel.send(pic)
+    else: 
+        user = ctx.author
+        pic = user.display_avatar.url
+        await ctx.channel.send(pic)
+
+
+@bot.command()
+async def nigger(ctx, quantity=1, word="nigger"):
+    i = 0
+    while i != quantity:
+        await ctx.channel.send(f"{word}")
+        i += 1
+
+@bot.command()
+async def botherTemo(ctx, user: discord.User=None, message='bbw'):
     image_links = bother_temo.get_google_images(message)
-    for link in image_links:
-        time.sleep(.2)
-        await user.send(link)
+    
+    if user:
+        for link in image_links:
+            time.sleep(.2)
+            await user.send(link)
+    else:
+        for link in image_links:
+            time.sleep(.2)
+            await ctx.channel.send(link)
 
 
 @bot.command()
