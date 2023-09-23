@@ -1,8 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-import time 
 import re
-import discord
 
 # Define the URL to search
 url = "https://myanimelist.net/watch/episode"

@@ -58,6 +58,7 @@ async def nigger(ctx, quantity=1, word="nigger"):
         await ctx.channel.send(f"{word}")
         i += 1
 
+
 @bot.command()
 async def botherTemo(ctx, user: discord.User=None, message='bbw'):
     image_links = bother_temo.get_google_images(message)
