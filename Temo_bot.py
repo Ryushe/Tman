@@ -4,7 +4,9 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import bother_temo
 import anime_updates
+import cook_book
 import time
+import re
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -38,6 +40,8 @@ Available commands:
 !update - update on any important anime info 
 !sendate @___ - update specific person on info
 !pfp @__ - gets user pfp / if left empty gives the user's pfp
+!cook <choice(optional)> <option(optional)>
+    "h" = help
     """)
 
 @bot.command()
@@ -49,6 +53,64 @@ async def pfp(ctx, user: discord.User=None):
         user = ctx.author
         pic = user.display_avatar.url
         await ctx.channel.send(pic)
+
+
+@bot.command()
+async def cook(ctx, choice, options=""):
+    choices = """
+empty(anything thats not an option) - help
+
+ar - add recepies <category>, <recipe>, <link> (comma seperated) if 2 words use _ instead of whitespace
+rr - remove recepies
+er - edit recepies
+lr - list recepies
+
+ac - add categories
+rc - remove categories
+ec - edit categories
+lc - list categories
+    """
+    if choice == "ar":
+        values = options.split(",")
+        try:
+            cook_book.addRecepies(values[0], values[1], values[2]) # should be (category, recipe, link)
+            await ctx.channel.send("Success :)")
+        except(ValueError)as e:
+            await ctx.channel.send(f"""
+Didn't work:
+
+Did you: 
+have whitespaces?
+spell the category wrong?
+""")
+
+    elif choice == "rr":
+        return 0
+    elif choice == "er":
+        return 0
+    
+    elif choice == "lr":
+        category = options
+
+        if options:
+            recipe = cook_book.listRecepies(category.lower())
+        else: 
+            recipe = cook_book.listAllRecepies()
+
+        await ctx.channel.send(f"Recepies are: \n{recipe}")
+
+    elif choice == "ac":
+        return 0
+    elif choice == "rc":
+        return 0
+    elif choice == "ec":
+        return 0
+    elif choice == "lc":
+        return 0
+    else:
+        await ctx.channel.send(f"your choices are: {choices}")
+    
+
 
 
 @bot.command()
