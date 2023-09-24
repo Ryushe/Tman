@@ -56,11 +56,11 @@ async def pfp(ctx, user: discord.User=None):
 
 
 @bot.command()
-async def cook(ctx, choice, options=""):
+async def cook(ctx, choice, *args):
     choices = """
 empty(anything thats not an option) - help
 
-ar - add recepies <category>, <recipe>, <link> (comma seperated) if 2 words use _ instead of whitespace
+ar - add recepies <category>, <recipe>, <link> (comma seperated or whitespace seperated) if 2 words use _ instead of whitespace
 rr - remove recepies
 er - edit recepies
 lr - list recepies
@@ -71,18 +71,21 @@ ec - edit categories
 lc - list categories
     """
     if choice == "ar":
-        values = options.split(",")
-        try:
-            cook_book.addRecepies(values[0], values[1], values[2]) # should be (category, recipe, link)
-            await ctx.channel.send("Success :)")
-        except(ValueError)as e:
-            await ctx.channel.send(f"""
-Didn't work:
+        
+        if ',' in args:
+            values = ''.join(args).split(',')
+        else:
+            values = ','.join(args).split(',')
 
-Did you: 
-have whitespaces?
-spell the category wrong?
-""")
+
+        print(values)
+#         try:
+#             cook_book.addRecepies(values[0].lower(), values[1], values[2]) # should be (category, recipe, link)
+#             await ctx.channel.send("Recipe added)")
+#         except(ValueError)as e:
+#             await ctx.channel.send(f"""
+# Didnt work lol
+# """)
 
     elif choice == "rr":
         return 0
@@ -90,9 +93,9 @@ spell the category wrong?
         return 0
     
     elif choice == "lr":
-        category = options
+        category = args
 
-        if options:
+        if args:
             recipe = cook_book.listRecepies(category.lower())
         else: 
             recipe = cook_book.listAllRecepies()
@@ -110,6 +113,9 @@ spell the category wrong?
     else:
         await ctx.channel.send(f"your choices are: {choices}")
     
+@bot.command()
+async def pcook(ctx, choice, *args): # personal cook instead of global
+    return 0
 
 
 
