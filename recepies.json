@@ -1,14 +1,13 @@
 {
     "beef": {
-        "BeefTipsAndTots": "<https://www.allrecipes.com/recipe/284164/beef-tips-and-tots/>",
-        "BeefAndChicken": "link2",
-        "MexicanTacos": "testref",
-        "MongolianBeef": "<https://thewoksoflife.com/mongolian-beef-recipe/>"
+        "beeftipsandtots": "<https://www.allrecipes.com/recipe/284164/beef-tips-and-tots/>",
+        "Mmexicantacos": "testref",
+        "mongolianbeef": "<https://thewoksoflife.com/mongolian-beef-recipe/>"
     },
     "chicken": {
-        "GrilledChicken": "link3"
+        "grilledchicken": "link3"
     },
     "vegetarian": {
-        "SpinachSalad": "link5"
+        "spinachsalad": "link5"
     }
 }

@@ -56,78 +56,11 @@ async def pfp(ctx, user: discord.User=None):
 
 
 @bot.command()
-async def cook(ctx, choice, *args):
-    choices = """
-empty(anything thats not an option) - help
+async def cook(ctx, choice="", *args):
+    if not args:
+        args = ""
+    await cook_book.main(ctx, choice, *args, bot=bot)
 
-ar - add recepies <category>, <recipe>, <link> (comma seperated or whitespace seperated) if 2 words use _ instead of whitespace
-rr - remove recepies
-er - edit recepies
-lr - list recepies
-
-ac - add categories
-rc - remove categories
-ec - edit categories
-lc - list categories
-    """
-    if choice == "ar": # done
-        
-        if ',' in args:
-            values = ''.join(args).split(',')
-        else:
-            values = ','.join(args).split(',')
-        
-        deEncodedValue = f"<{values[2]}>"
-        try:
-            cook_book.addRecepies(values[0].lower(), values[1], deEncodedValue) # should be (category, recipe, link)
-            await ctx.channel.send("Recipe added")
-        except(IndexError)as e:
-            await ctx.channel.send(f"Give me 3 args dumbass <category> <Recipename> <link>\nTo see categories use:\n`!cook lr`")
-
-    elif choice == "rr":
-        recipe = args
-        await cook_book.delRecipies(ctx, bot, recipe[0])
-
-
-
-
-        # if ',' in args:
-        #     values = ''.join(args).split(',')
-        # else:
-        #     values = ','.join(args).split(',')
-
-        
-        # try:
-        #     cook_book.delRecipies(values[0], values[1]) #(category, recipe)
-        #     await ctx.channel.send("Recipe deleted")
-        # except(IndexError)as e:
-        #     await ctx.channel.send(f"Error occured")
-
-    elif choice == "er":
-        return 0
-    
-    elif choice == "lr": # done
-        category = ''.join(args)
-
-        if args:
-            recipe = cook_book.listRecepies(category.lower())
-        else: 
-            recipe = cook_book.listAllRecepies()
-
-        await ctx.channel.send(f"Recepies are: \n{recipe}")
-
-    elif choice == "ac":
-        return 0
-    elif choice == "rc":
-        return 0
-    elif choice == "ec":
-        return 0
-    elif choice == "lc":
-        categories = cook_book.listCategories()
-        await ctx.channel.send(f"Categories:\n{categories}")
-
-    else:
-        await ctx.channel.send(f"your choices are: {choices}")
     
 @bot.command()
 async def pcook(ctx, choice, *args): # personal cook instead of global
