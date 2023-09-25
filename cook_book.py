@@ -99,6 +99,8 @@ def writeToFile():
     
     recipe_file.close()
 
+def checkIfSameUser(message, author, channel):
+             return message and message.author == author and message.channel == channel
 
 async def main(ctx, choice, *args, bot):
     choices = """
@@ -109,9 +111,9 @@ ar - add recepies <category>, <recipe>, <link> (comma seperated or whitespace se
 er - edit recepies (enters edit mode / follow prompts)
 lr - list recepies <recipe name>
 
-ac - add categories
-rc - remove categories
-ec - edit categories
+ac - add categories <category>
+rc - remove categories <category to add> (will prompt after this is sent)
+ec - edit categories <category> (will prompt after this is sent)
 lc - list categories
     """
 
@@ -140,19 +142,17 @@ lc - list categories
         await ctx.channel.send(f"Select a category\n{listAllRecepies()}")
 
         while True:
-            def check(message):
-                return message.author == ctx.author and message.channel == ctx.channel
 
-            userInput = await bot.wait_for('message', check=check)
+            userInput = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
 
             recipeInList, category, recipe = await checkIfInRecipeList(userInput.content.lower())
 
             if recipeInList:
                 await ctx.channel.send("What would you like to change (L)ink or (N)ame (E)xit")
-                response = await bot.wait_for('message', check=check)
+                response = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
                 if response.content.lower() == 'n':
                     await ctx.channel.send("Enter new name:")
-                    newRecipeName = await bot.wait_for('message', check=check)
+                    newRecipeName = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
                     linkValue = recipes[category][recipe]
                     del recipes[category][recipe]
                     recipes[category][newRecipeName.content] = linkValue
@@ -160,7 +160,7 @@ lc - list categories
                     
                 elif response.content.lower() == 'l':
                     await ctx.channel.send("Enter new link:")
-                    newLink = await bot.wait_for('message', check=check)
+                    newLink = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
                     # Update the link for the existing recipe name (key)
                     recipes[category][recipe] = newLink.content
                     await ctx.channel.send(f"{recipes[category][newLink.content]}: Link changed")
@@ -188,22 +188,21 @@ lc - list categories
         try:
             if category not in recipes:
                 recipes[category] = {}
-                await ctx.channel.send(f"Added:{category}")
+                await ctx.channel.send(f"Added: {category}")
             writeToFile()
         except(IndexError) as e:
             await ctx.channel.send("remove the whitespaces")
 
 
     elif choice == "rc":
-        def check(message):
-            return message.author == ctx.author and message.channel == ctx.channel
-        
+ 
         while True:
             category = args[0]
+
             try:
                 if category in recipes:
                     await ctx.channel.send(f"Are you sure? This will delete the catagory and everything inside\n(Y)es, (N)o")
-                    newLink = await bot.wait_for('message', check=check)
+                    newLink = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
                     if newLink.content.lower() == 'y':
                         del recipes[category]
                         await ctx.channel.send(f"Deleted {category}")
@@ -212,6 +211,7 @@ lc - list categories
                     else: 
                         await ctx.channel.send(f"Didn't delete :)")
                         break
+                
                 else:
                     await ctx.channel.send(f"{args[0]} is not a category")
                     break
@@ -220,7 +220,26 @@ lc - list categories
                 break
 
     elif choice == "ec":
-        await ctx.channel.send(f"Nigga this shit aint done yet")
+       
+        category = args[0]
+        while True:
+            try:
+                if category in recipes:
+                    await ctx.channel.send(f"Entering edit mode:\nEnter anything other than an existing category to exit\nNew category name for{category}:")
+                    newCategoryName = await bot.wait_for('message', check=lambda message: checkIfSameUser(message, ctx.author, ctx.channel))
+                    if newCategoryName:
+                        recipes[newCategoryName] = recipes[category] # copies to new
+                        del recipes[category] # deletes old
+                    writeToFile()
+                    break
+                else:
+                    await ctx.channel.send("Exited edit mode")
+                    await ctx.channel.send(f"That category doesn't exist viable options:\n{listCategories()}")   
+                    break
+
+
+            except() as e:
+                break
     elif choice == "lc":
         categories = listCategories()
         await ctx.channel.send(f"Categories:\n{categories}")

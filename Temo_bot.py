@@ -22,6 +22,12 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f'{bot.user} is in your servers')
 
+    await bot.change_presence(
+        status=discord.Status.online, #'online', 'idle', 'dnd' (Do Not Disturb), or 'invisible'
+        activity=discord.Game(name='!commands')  
+    )
+
+
 @bot.command()
 async def hello(ctx):
     if ctx.author == bot.user:
