@@ -9,33 +9,47 @@ try:
     with open(recipe_path, "r") as recipe_file:
         recipes = json.load(recipe_file)
 except FileNotFoundError:
-    recipes = {}
+    with open(recipe_path, "w") as recipe_file:
+        recipes = {}
 
 # for main function if user doesn't input a choice
 def getRandomCategory():                                                # doesnt work
     return random.choice(list(recipes.keys()))
 
 def listCategories():
-    word = ", ".join(recipes.keys())
+    word = ", ".join([recipe.capitalize() for recipe in recipes.keys()])
     return word
 
-def listRecepies(category):
-    recipe = ", ".join(recipes[category])
-    return recipe
+def listRecepies(category): # lists only that category
+    formattedRecipes = ""
+    
+    if category in recipes:
+        recipesInCategory = recipes[category]
+        formattedRecipes += f"{category.capitalize()}:\n"
+        numRecipes = len(recipesInCategory)
+        
+        for i, (recipeName, recipeLink) in enumerate(recipesInCategory.items()):
+            formattedRecipes += f"    {recipeName}: {recipeLink}"
+            if i < numRecipes - 1:
+                formattedRecipes += "\n" 
+            if i == numRecipes - 1:
+                formattedRecipes += "\n\n"
+    return formattedRecipes
+    
 
 def listAllRecepies():
-    formatted_recipes = ""
-    for category, recipes_in_category in recipes.items():
-        formatted_recipes += f"{category.capitalize()}:\n"
-        num_recipes = len(recipes_in_category)
-        for i, (recipe_name, recipe_link) in enumerate(recipes_in_category.items()):
-            formatted_recipes += f"  {recipe_name}: {recipe_link}"
-            if i < num_recipes - 1:
-                formatted_recipes += "\n" 
-            if i == num_recipes - 1:
-                formatted_recipes += "\n\n"
+    formattedRecipes = ""
+    for category, recipesInCategory in recipes.items():
+        formattedRecipes += f"{category.capitalize()}:\n"
+        numRecipes = len(recipesInCategory)
+        for i, (recipeName, recipeLink) in enumerate(recipesInCategory.items()):
+            formattedRecipes += f"  {recipeName}: {recipeLink}"
+            if i < numRecipes - 1:
+                formattedRecipes += "\n" 
+            if i == numRecipes - 1:
+                formattedRecipes += "\n\n\n\n"
 
-    return formatted_recipes
+    return formattedRecipes
 
 def addRecepies(category, recipe, link):
     if category not in recipes:
@@ -49,5 +63,30 @@ def addRecepies(category, recipe, link):
     else:
         print("Recipe already exists.")
 
+# def delRecipies(category, recipe):
+#     if category in recipes:
+#         if recipe in recipes[category]:
+#             del recipes[category][recipe]
+            
+
+
+async def delRecipies(ctx, bot, recipe):
+    
+
+    category = ''
+    async def checkIfRecipeExists():
+        for category in list(recipes.keys()):
+            recipeItems = recipes[category]
+            print(recipeItems)
+            if recipe in recipeItems:
+                return category
+            
+    category = await checkIfRecipeExists()
+    if category:
+        del recipes[category][recipe]
+        with open(recipe_path, "w") as recipe_file:
+            json.dump(recipes, recipe_file, indent=4)
+        
+        await ctx.channel.send("Recipe deleted")
 
 recipe_file.close()

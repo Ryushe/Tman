@@ -70,30 +70,44 @@ rc - remove categories
 ec - edit categories
 lc - list categories
     """
-    if choice == "ar":
+    if choice == "ar": # done
         
         if ',' in args:
             values = ''.join(args).split(',')
         else:
             values = ','.join(args).split(',')
-
-
-        print(values)
-#         try:
-#             cook_book.addRecepies(values[0].lower(), values[1], values[2]) # should be (category, recipe, link)
-#             await ctx.channel.send("Recipe added)")
-#         except(ValueError)as e:
-#             await ctx.channel.send(f"""
-# Didnt work lol
-# """)
+        
+        deEncodedValue = f"<{values[2]}>"
+        try:
+            cook_book.addRecepies(values[0].lower(), values[1], deEncodedValue) # should be (category, recipe, link)
+            await ctx.channel.send("Recipe added")
+        except(IndexError)as e:
+            await ctx.channel.send(f"Give me 3 args dumbass <category> <Recipename> <link>\nTo see categories use:\n`!cook lr`")
 
     elif choice == "rr":
-        return 0
+        recipe = args
+        await cook_book.delRecipies(ctx, bot, recipe[0])
+
+
+
+
+        # if ',' in args:
+        #     values = ''.join(args).split(',')
+        # else:
+        #     values = ','.join(args).split(',')
+
+        
+        # try:
+        #     cook_book.delRecipies(values[0], values[1]) #(category, recipe)
+        #     await ctx.channel.send("Recipe deleted")
+        # except(IndexError)as e:
+        #     await ctx.channel.send(f"Error occured")
+
     elif choice == "er":
         return 0
     
-    elif choice == "lr":
-        category = args
+    elif choice == "lr": # done
+        category = ''.join(args)
 
         if args:
             recipe = cook_book.listRecepies(category.lower())
@@ -109,7 +123,9 @@ lc - list categories
     elif choice == "ec":
         return 0
     elif choice == "lc":
-        return 0
+        categories = cook_book.listCategories()
+        await ctx.channel.send(f"Categories:\n{categories}")
+
     else:
         await ctx.channel.send(f"your choices are: {choices}")
     
@@ -164,5 +180,28 @@ async def sendate(ctx, user: discord.User):
 
 def get_bot():
     return bot
+
+@bot.command()
+async def game(ctx):
+    await ctx.send(f"""
+Enter an option:
+list - list all recipies
+<recipe name>
+exit or e
+""")
+
+    while True:
+        # Wait for a message from the same user who triggered the game
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        userInput = await bot.wait_for('message', check=check)
+
+        if userInput.content.lower() == 'list':
+            await ctx.send("list")
+    
+        # Process the user's input (you can add your game logic here)
+        response = f'You said: {userInput.content}'
+        await ctx.send(response)
 
 bot.run(TOKEN)
