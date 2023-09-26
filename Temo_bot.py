@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import bother_temo
 import anime_updates
 import cook_book
+import recipe_grabber
 import time
 import re
 
@@ -67,6 +68,11 @@ async def cook(ctx, choice="", *args):
         args = ""
     await cook_book.main(ctx, choice, *args, bot=bot)
 
+@bot.command()
+async def search(ctx, *args):
+    if not args:
+        args = ""
+    await recipe_grabber.main(ctx, *args, bot=bot)
     
 @bot.command()
 async def pcook(ctx, choice, *args): # personal cook instead of global

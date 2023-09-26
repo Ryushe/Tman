@@ -2,7 +2,8 @@
     "beef": {
         "beeftipsandtots": "<https://www.allrecipes.com/recipe/284164/beef-tips-and-tots/>",
         "Mmexicantacos": "testref",
-        "mongolianbeef": "<https://thewoksoflife.com/mongolian-beef-recipe/>"
+        "mongolianbeef": "<https://thewoksoflife.com/mongolian-beef-recipe/>",
+        "test": "<test>"
     },
     "chicken": {
         "grilledchicken": "link3"

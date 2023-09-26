@@ -1,0 +1,10 @@
+{
+    
+    "sites":{
+        "cookpad": "https://cookpad.com/us/search/",
+        "GitHub": "https://github.com",
+        "OpenAI": "https://www.openai.com"
+    },
+    "userchoice": "cookpad"
+
+}

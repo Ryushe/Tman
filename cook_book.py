@@ -51,17 +51,6 @@ def listAllRecepies():
 
     return formattedRecipes
 
-def addRecepies(category, recipe, link):
-    if category not in recipes:
-        recipes[category] = {}
-    
-    if recipe not in recipes[category]:
-        recipes[category][recipe] = link
-
-        writeToFile()
-    else:
-        print("Recipe already exists.")
-
 async def checkIfRecipeExists(ctx, recipe):
         for category in list(recipes.keys()):
             recipeItems = recipes[category]
@@ -102,6 +91,29 @@ def writeToFile():
 def checkIfSameUser(message, author, channel):
              return message and message.author == author and message.channel == channel
 
+async def addRecipe(ctx, *args):
+    if ',' in args:
+        values = ''.join(args).split(',')
+    else:
+        values = ','.join(args).split(',')
+
+    category = values[0].lower()
+    recipe = values[1]
+    deEncodedValue = f"<{values[2]}>"
+    try:
+        if category not in recipes:
+            recipes[category] = {}
+        if recipe not in recipes[category]:
+            recipes[category][recipe] = deEncodedValue
+            writeToFile()
+            await ctx.channel.send("Recipe added")
+        else:
+            await ctx.channel.send("Recipe already exists.")
+        
+    except(IndexError)as e:
+        await ctx.channel.send(f"Give me 3 args dumbass <category> <Recipename> <link>\nTo see categories use:\n`!cook lr`")
+
+
 async def main(ctx, choice, *args, bot):
     choices = """
 
@@ -119,19 +131,8 @@ lc - list categories
 
     # add recipe
     if choice == "ar": # done
-        
-        if ',' in args:
-            values = ''.join(args).split(',')
-        else:
-            values = ','.join(args).split(',')
-        
-        deEncodedValue = f"<{values[2]}>"
-        try:
-            addRecepies(values[0].lower(), values[1], deEncodedValue) # should be (category, recipe, link)
-            await ctx.channel.send("Recipe added")
-        except(IndexError)as e:
-            await ctx.channel.send(f"Give me 3 args dumbass <category> <Recipename> <link>\nTo see categories use:\n`!cook lr`")
-
+        await addRecipe(ctx, *args)
+       
     # remove recipe
     elif choice == "rr": # done
         recipe = args
