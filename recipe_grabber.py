@@ -46,72 +46,97 @@ def getResponse(searchUrl):
 def removeWhitespaces(recipe):
     return recipe.replace(" ", "_")
 
+def sanitizeRecipeName(recipeName):
+    sanitizedRecipeName = recipeName
+    
+    for char in recipeName:
+        if char.isspace():
+            sanitizedRecipeName = removeWhitespaces(recipeName).lower()
+    return sanitizedRecipeName
+        
+
 async def addRecipe(recipeName, recipeLink, ctx, bot):
     for char in recipeName:
         if char.isspace():
             sanitizedRecipeName = removeWhitespaces(recipeName).lower()
             break
         else: sanitizedRecipeName = recipeName
+
     await ctx.channel.send(aOptions) # var at top page
     category = await bot.wait_for('message', check=lambda message: cook_book.checkIfSameUser(message, ctx.author, ctx.channel))
 
     try: await cook_book.addRecipe(ctx, category.content.lower(), sanitizedRecipeName, recipeLink)
     except: await ctx.channel.send(f"Recipe couldn't be added")
 
+
+def combineArgs(*args):
+    return ' '.join(args)
+
+
 async def main(ctx, *args, bot):
     site = "sites"
     userChoice = url["userchoice"]
 
-    if args[0].lower() == 's':
+    #args = combineArgs(*args)
+    print(args)
+
+    if args.lower() == 's':
         await ctx.channel.send(f"Searching on {userChoice}")
     else:
-        if args[0]:
-            searchUrl = url[site][userChoice] + args[0]
+        if args:
+            searchUrl = url[site][userChoice] + args
         else:
             searchUrl = url[site][userChoice]
         
         soup = getResponse(searchUrl)
         
 
-        searchItem = args[0]
+        searchItem = args
         await ctx.channel.send(f"Searching for {searchItem}")
 
         if userChoice == "cookpad":
-            # Find the <a> tag
+            searchTag = {"name": "a", "class_": "block-link__main"}
             try:
-                aTags = soup.find_all("a", class_="block-link__main")
-                nameAtag = soup.find("a", class_="block-link__main")
+                nameAtag = soup.find("a", class_="block-link__main") 
                 recipeName = nameAtag.get_text(strip=True)
-                recipeLink = "https://cookpad.com" + nameAtag.get('href')
+                siteLink = "https://cookpad.com"
+                recipeLink = siteLink + nameAtag.get('href')
                 
-                while True:
 
-                    await ctx.channel.send(f"Recipe found: {recipeName}")
-                    await ctx.channel.send("(A)dd recipe to !cook, (N)ext recipe,(V)iew, (S)ite using, (E)xit")
-                    userInput = await bot.wait_for('message', check=lambda message: cook_book.checkIfSameUser(message, ctx.author, ctx.channel))
-
-                    if userInput.content.lower() == 'a':
-                        await addRecipe(recipeName, recipeLink, ctx, bot)
-                        break
-                       
-                    elif userInput.content.lower() == "n": # broken
-                        try:
-                            nameAtag = nameAtag.find_next("a", class_="block-link__main")
-                            recipeName = nameAtag.get_text(strip=True)
-                        except():
-                            await ctx.channel.send(f"No more recipes")
-                            break
-                        continue
-                    elif userInput.content.lower() == "v":
-                        await ctx.channel.send(f"Link: {recipeLink}")
-                        continue
-                        
-                    else:
-                        await ctx.channel.send("Exiting")
-                        break
 
             except(AttributeError) as e:
-                await ctx.channel.send(f"Nothing found for {args[1]}")
+                await ctx.channel.send(f"Nothing found for {args}")
+
+
+        while True:
+            recipeName = sanitizeRecipeName(recipeName) #sanitize recipe name
+
+            await ctx.channel.send(f"Recipe found: {recipeName}") 
+            await ctx.channel.send("(A)dd recipe to !cook, (N)ext recipe,(V)iew, (S)ite using, (E)xit")
+            userInput = await bot.wait_for('message', check=lambda message: cook_book.checkIfSameUser(message, ctx.author, ctx.channel))
+
+            if userInput.content.lower() == 'a':
+                await addRecipe(recipeName, recipeLink, ctx, bot)
+                break
+                
+            elif userInput.content.lower() == "n": # broken
+                try:
+                    nameAtag = nameAtag.find_next(**searchTag)
+                    recipeName = nameAtag.get_text(strip=True)
+                    recipeLink = siteLink + nameAtag.get('href')
+                except():
+                    await ctx.channel.send(f"No more recipes")
+                    break
+                continue
+            elif userInput.content.lower() == "v":
+                await ctx.channel.send(f"Link: {recipeLink}")
+                continue
+                
+            else:
+                await ctx.channel.send("Exiting")
+                break
+
+            
         else:
             await ctx.channel.send(f"""
 Options:
