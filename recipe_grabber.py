@@ -4,6 +4,12 @@ import json
 import asyncio
 import cook_book
 
+aOptions = f"""\n
+What category would you like to add it to?
+{cook_book.listCategories()}
+Enter new category to create it
+"""
+
 file = "recipe_grabber.json"
 
 try:
@@ -40,59 +46,76 @@ def getResponse(searchUrl):
 def removeWhitespaces(recipe):
     return recipe.replace(" ", "_")
 
+def addRecipe():
+    return 0
+
 async def main(ctx, *args, bot):
     site = "sites"
     userChoice = url["userchoice"]
 
-    if args[1]:
-        searchUrl = url[site][userChoice] + args[1]
-    else:
-        searchUrl = url[site][userChoice]
-    
-    soup = getResponse(searchUrl)
-    
-
-    if args[0] == "ss": # site selected
+    if args[0].lower() == 's':
         await ctx.channel.send(f"Searching on {userChoice}")
-    
-    elif args[0] == "sf": # search for     # continue make scrape
-        searchItem = args[1]
+    else:
+        if args[0]:
+            searchUrl = url[site][userChoice] + args[0]
+        else:
+            searchUrl = url[site][userChoice]
+        
+        soup = getResponse(searchUrl)
+        
+
+        searchItem = args[0]
         await ctx.channel.send(f"Searching for {searchItem}")
 
         if userChoice == "cookpad":
             # Find the <a> tag
             try:
+                
                 nameAtag = soup.find("a", class_="block-link__main")
                 recipeName = nameAtag.get_text(strip=True)
                 recipeLink = "https://cookpad.com" + nameAtag.get('href')
-                print(recipeName,":", recipeLink)
-
+                
                 while True:
-                    if recipeName.isspace():
-                        sanitizedRecipeName = removeWhitespaces(recipeName).lower()
+                    for char in recipeName:
+                        if char.isspace():
+                            sanitizedRecipeName = removeWhitespaces(recipeName).lower()
+                            break
+                        else: sanitizedRecipeName = recipeName
+                        
 
                     await ctx.channel.send(f"Recipe found: {recipeName}")
-                    await ctx.channel.send("(A)dd recipe to !cook, (N)ext recipe, (E)xit")
+                    await ctx.channel.send("(A)dd recipe to !cook, (N)ext recipe,(V)iew, (S)ite using, (E)xit")
                     userInput = await bot.wait_for('message', check=lambda message: cook_book.checkIfSameUser(message, ctx.author, ctx.channel))
 
                     if userInput.content.lower() == 'a':
 
-                        await ctx.channel.send(f"""\n
-What category would you like to add it to?
-{cook_book.listCategories()}
-Enter new category to create it
-""")
+                        await ctx.channel.send(aOptions) # var at top page
                         category = await bot.wait_for('message', check=lambda message: cook_book.checkIfSameUser(message, ctx.author, ctx.channel))
-                        await cook_book.addRecipe(ctx, category.content.lower(), recipeName, recipeLink)
+
+                        try: await cook_book.addRecipe(ctx, category.content.lower(), sanitizedRecipeName, recipeLink)
+                        except: await ctx.channel.send(f"Recipe couldn't be added")
                         break
+
+                    elif userInput.content.lower() == "n": # broken
+                        try:
+                            nameAtag = nameAtag.find_next("a", class_="block-link__main")
+                            recipeName = nameAtag.get_text(strip=True)
+                        except():
+                            await ctx.channel.send(f"No more recipes")
+                            break
+                        continue
+                    elif userInput.content.lower() == "v":
+                        await ctx.channel.send(f"Link: {recipeLink}")
+                        continue
+                        
                     else:
                         await ctx.channel.send("Exiting")
                         break
 
             except(AttributeError) as e:
                 await ctx.channel.send(f"Nothing found for {args[1]}")
-    else:
-        await ctx.channel.send(f"""
+        else:
+            await ctx.channel.send(f"""
 Options:
 ss - site selected
 sf - search for <Item to search for>

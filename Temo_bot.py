@@ -48,7 +48,8 @@ Available commands:
 !sendate @___ - update specific person on info
 !pfp @__ - gets user pfp / if left empty gives the user's pfp
 !cook <choice(optional)> <option(optional)>
-    "h" = help
+!search <recipe to search for>
+    s - search engine
     """)
 
 @bot.command()
