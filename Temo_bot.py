@@ -82,7 +82,7 @@ async def pcook(ctx, choice, *args): # personal cook instead of global
 
 
 @bot.command()
-async def nigger(ctx, quantity=1, word="nigger"):
+async def spam(ctx, quantity=1, word="Rahhhhhhh"):
     i = 0
     while i != quantity:
         await ctx.channel.send(f"{word}")
