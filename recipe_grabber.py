@@ -23,6 +23,7 @@ headers = {
     "User-Agent": "recipe_grabber/2.7 (Contact: itslilpeenieweenie@gmail.com)"
 }
 
+
 def writeToRecipes():
     file = "recepies.json"
     try:
@@ -32,6 +33,7 @@ def writeToRecipes():
         print("error writing")
     
     recipeFile.close()
+
 
 def getResponse(searchUrl):
     response = requests.get(searchUrl, headers=headers)
@@ -43,8 +45,10 @@ def getResponse(searchUrl):
     else:
         print(f"Request failed with status code: {response.status_code}")
 
+
 def removeWhitespaces(recipe):
     return recipe.replace(" ", "_")
+
 
 def sanitizeRecipeName(recipeName):
     sanitizedRecipeName = recipeName
@@ -77,8 +81,7 @@ async def main(ctx, *args, bot):
     site = "sites"
     userChoice = url["userchoice"]
 
-    #args = combineArgs(*args)
-    print(args)
+    args = combineArgs(*args)
 
     if args.lower() == 's':
         await ctx.channel.send(f"Searching on {userChoice}")
@@ -131,7 +134,7 @@ async def main(ctx, *args, bot):
             elif userInput.content.lower() == "v":
                 await ctx.channel.send(f"Link: {recipeLink}")
                 continue
-                
+
             else:
                 await ctx.channel.send("Exiting")
                 break
@@ -144,63 +147,3 @@ ss - site selected
 sf - search for <Item to search for>
 any other input - help page
 """)
-    
-    # filePath = input(
-    #     "Where would you like to save it my child:\n") or "/home/lilpeenieweenie/wkfolder/myCode"
-    # names = []
-    # srcs = []
-
-    # def main():
-        
-    #     downloadWebContent()
-
-
-    # def createFile():
-
-    #     try: 
-    #         outFile = open(filePath+f'/{searchItem}.txt', 'x')
-    #     except IOError:
-    #         outFile = open(filePath+f'/{searchItem}.txt', 'a')
-    #     return outFile
-
-    # def splitNumbers(names): #shortens name of file 
-
-    #     text = ""
-    #     characters = []
-    #     num = ""
-
-    #     for name in names: 
-    #         for i in name: 
-    #             if(i.isalpha()):
-    #                 text += i
-    #             else: num += i
-
-    #         characters.append(text)
-    #         charlen = len(characters)
-    #         final = characters[charlen-1]
-    #     return(final)
-
-    # def downloadWebContent():
-    #     for t in tbody:
-    #         srcs =  t.br.next_sibling['href']
-    #         names = t.img['title']
-    #         filteredNames = splitNumbers(names)
-    #         r = requests.get(srcs, allow_redirects=True)
-
-    #         open(filePath+"/"+filteredNames 
-    #         +checkFileType(names), 'wb').write(r.content)
-
-
-
-    # def checkFileType(filteredNames):
-    #     for name in filteredNames:
-    #         if(name.__contains__('jpg')):
-    #             return('.jpg')
-    #         elif(name.__contains__('png')):
-    #             return('.png')
-    #         else: return '.jpg'
-
-
-
-
-    # want to use .__contains__('string') to see if pdf, jpg etc and then make the file
