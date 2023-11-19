@@ -1,4 +1,4 @@
-# Project Title
+# Tman - the bot about mo
 
 Discord bot that contains many different functionalities:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recipe book  
@@ -54,5 +54,3 @@ Main commands:
 ## Authors
 
 * **LilPeenieWeenie** - (https://github.com/LilPeenieWeenie)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
