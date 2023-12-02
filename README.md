@@ -48,8 +48,6 @@ Main commands:
 ## Built With
 
 * [BS4](https://beautiful-soup-4.readthedocs.io/en/latest/) - Web Scraping Framework Used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Authors
 
