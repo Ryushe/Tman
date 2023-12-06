@@ -6,7 +6,10 @@ Discord bot that contains many different functionalities:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image scraper (sends image to user specified)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and much much more
 
-## Installing
+## Installing (as admin prompt)
+
+note: install bat only installs python3, pip and discord.py microsoft c++ build tools needs seperate install
+Microsoft C++ build tools: https://visualstudio.microsoft.com/downloads/?q=build+tools
 
 ```
 git clone https://github.com/LilPeenieWeenie/Tman.git && cd Tman
@@ -15,9 +18,15 @@ git clone https://github.com/LilPeenieWeenie/Tman.git && cd Tman
 ```
 echo "DISCORD_TOKEN=<put your bot token here>" > .env
 ```
+optional (if not ran, manual installs for the dependancies found at bottom of page)
+```
+./install.bat
+```
+
 ```
 chmod +x ./Tman.bat
 ```
+
 ```
 ./Tman.bat
 ```
@@ -44,6 +53,12 @@ Main commands:
 
 
 ```
+## Dependancies
+
+* Microsoft C++ build tools
+* Python3
+* pip
+* Discord.py
 
 ## Built With
 

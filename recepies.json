@@ -3,11 +3,11 @@
         "beeftipsandtots": "<https://www.allrecipes.com/recipe/284164/beef-tips-and-tots/>",
         "Mmexicantacos": "testref",
         "mongolianbeef": "<https://thewoksoflife.com/mongolian-beef-recipe/>",
-        "test": "<test>",
         "bacon_\ud83e\udd53_wrapped_chicken_thighs": "<https://cookpad.com/us/recipes/17151828-bacon-wrapped-chicken-thighs>"
     },
     "chicken": {
-        "grilledchicken": "link3"
+        "grilledchicken": "link3",
+        "brad's_chicken_and_sausage_gumbo": "<https://cookpad.com/us/recipes/13829128-brads-chicken-and-sausage-gumbo>"
     },
     "vegetarian": {
         "spinachsalad": "link5"
