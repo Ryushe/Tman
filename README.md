@@ -22,7 +22,7 @@ optional (if not ran, manual installs for the dependencies found at bottom of pa
 ```
 ./install.bat
 ```
-
+----------------------------
 ```
 chmod +x ./Tman.bat
 ```
