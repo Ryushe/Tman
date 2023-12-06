@@ -18,7 +18,7 @@ git clone https://github.com/LilPeenieWeenie/Tman.git && cd Tman
 ```
 echo "DISCORD_TOKEN=<put your bot token here>" > .env
 ```
-optional (if not ran, manual installs for the dependancies found at bottom of page)
+optional (if not ran, manual installs for the dependencies found at bottom of page)
 ```
 ./install.bat
 ```
@@ -53,12 +53,15 @@ Main commands:
 
 
 ```
-## Dependancies
+## Dependencies
 
 * Microsoft C++ build tools
 * Python3
 * pip
 * Discord.py
+* python - requests
+* python - dotenv
+* python - bs4
 
 ## Built With
 
