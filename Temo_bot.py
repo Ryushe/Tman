@@ -52,7 +52,7 @@ Available commands:
     s - search engine
     """)
 
-@bot.command()
+@bot.command(help='Syntax: !pfp @userinserver')
 async def pfp(ctx, user: discord.User=None):
     if user:
         pic = user.display_avatar.url
